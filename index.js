@@ -1,4 +1,3 @@
-"use strict";
 console.log("start");
 /**
  1. Предложите вариант базового класса для успешной работы следующего кода.
@@ -37,17 +36,23 @@ const input = [-2, 2, 4, 6, 8, 10, 3, 5, 7, 9, -1, -11];
 
 const func = (arr) => {
     let arr1 = []
-    for (const iter of arr) {
-        if (iter % 2 === 0) {
-            arr1.push(iter)
+    let arr2 = []
+    let arr3 = []
+    for (const iter in arr) {
+        if (arr[iter] % 2 === 0) {
+            
+            arr1.push(arr[iter])
+            
         }
     }
-    // console.log('arr1', arr1)
-    // arr1.sort()
-    // // console.log(Array.prototype.sort());
-    // console.log('arr1sort', arr1)
-    
+    arr1.sort((a, b) => a - b).reverse()
+
+    let a = [-2, 2, 4, 6, 8, 10];
+    let sl = a.slice(0, 1)
+    console.log(sl);
+    console.log('arr1', arr1)
+    console.log('arr1sort', arr1)
+
 }
 
-
-// console.log(func(input)); // [10, 8, 6, 4, 2, -2, -11, -1, 3, 5, 7, 9]
+console.log(func(input)); // [10, 8, 6, 4, 2, -2, -11, -1, 3, 5, 7, 9]
