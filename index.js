@@ -74,7 +74,12 @@ const funcStr = (str) => {
     return answer
 };
 
+const funcStr2 = () => {
+    return str.split('').filter(char => char.charCodeAt() % 3 === 0).length
+}
+
 // console.log(funcStr(str)); // 9
+// console.log(funcStr2(str)); // 9
 
 
 /*
@@ -115,6 +120,7 @@ function drawRating(vote) {
  * @param callback {Function<Error, Object>} - Коллбек функция возвращающая результирующие данные
 */
 const getData = (id, callback = () => { }) => {
+    console.log('idл', id)
     if (!id) {
         return callback(new Error('getData: ID not specified'));
     }
@@ -127,8 +133,7 @@ const getData = (id, callback = () => { }) => {
         callback(null, data);
     }, Math.random() * 10);
 };
-getData(78)
-console.log('getData', getData(3232));
+
 
 /**
  * Ваша функция
@@ -138,9 +143,30 @@ console.log('getData', getData(3232));
  * @result {Promise<Object>} - Полный обьект с данными от сервера
 */
 const mainFn = (data) => {
-    // ... ваш код
 
-    return Promise.resolve(data)
+    const createObj = (num) => {
+        return { id: num, data: { utime: Date.now() } }
+    }
+
+    const resultFn = (data) => {
+        let postData = data
+        for (const key in data) {
+            console.log('key', key)
+            if (Array.isArray(data[key])) {
+                let postMultiple = []
+                postMultiple = data[key].map(item => {
+                    return createObj(item)
+                })
+                postData.multiple = postMultiple
+            } else if (key !== 'id' & key !== 'title' & !Array.isArray(data[key])) {
+                postData[key] = createObj(data[key])
+            }
+        }
+
+
+        return postData
+    }
+    return Promise.resolve(resultFn(data));
 };
 
 // Вызов вашей функции, должен вызвать resultFn в итоге
@@ -148,18 +174,25 @@ mainFn({
     id: 78,
     title: 'Some title',
     single: 12345,
-    single: 12345,
+    single2: 12343,
+    single256: 12345363,
     multiple: [56783, 46573, 13251]
 }).then((result) => {
+    console.log('bdsb');
     console.log(result);
-    let obj = result.single
-
     /**
      {
-     id: 78,    
-    title: 'Some title',
+         id: 78,
+             title: 'Some title',
        single: { id: 12345, data: { utime: ... }},
        multiple: [{ id: 56783, data: { utime: ...  }}, { id: 46573, data: { utime: ...  }}, { id: 13251, data: { utime: ... }}]
    }
   */
 });
+
+
+/**
+1 и 5, я, честно говоря не понял как решить, такое ощущение, что захожу не стой стороны и чтобы задачу не оставить не решенной, я сделал свою дверь-
+ */
+
+
