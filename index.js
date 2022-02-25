@@ -90,4 +90,76 @@ function drawRating(vote) {
     return arr.join('').substring(0, 5)
 }
 
-console.log(drawRating(39));
+// console.log(drawRating(39));
+
+
+
+
+
+/**
+ 5. Задачка посложнее, на асинхронность. Имеется объект фиксированной структуры, хранящий значения по некоторым ID в разных форматах, а так же сервис отдающий данные по каждому ID.
+
+Функция mainFn должна загрузить данные по каждому ID в объекте и запустить resultFn с готовым обьектом данных.
+
+Хорошо если вы продумаете как поддерживать данный код если структура объекта на входе начнет меняться (например добавится поле single2)z
+
+Разрешено создавать новые функции. Запрещено импортировать код сторонних библиотек.
+ */
+
+/**
+ * Mock функция, представьте что это кривой старый promissless сторонний сервис возвращающий записи из БД, 
+ * Доступа к исходному коду этого сервиса у вас нет и исправить его нельзя
+ * НЕ МЕНЯЙТЕ ДАННЫЙ МЕТОД
+ *
+ * @param id {Number} - ID записи
+ * @param callback {Function<Error, Object>} - Коллбек функция возвращающая результирующие данные
+*/
+const getData = (id, callback = () => { }) => {
+    if (!id) {
+        return callback(new Error('getData: ID not specified'));
+    }
+
+    setTimeout(() => {
+        const data = {
+            utime: Date.now()
+        };
+
+        callback(null, data);
+    }, Math.random() * 10);
+};
+getData(78)
+console.log('getData', getData(3232));
+
+/**
+ * Ваша функция
+ * Перепишите данный метод так 
+ * что бы в результате выполнения функции в resultFn пришли данные по каждому ID в требуемом формате
+ * @param data {Object} - Исходный обьект
+ * @result {Promise<Object>} - Полный обьект с данными от сервера
+*/
+const mainFn = (data) => {
+    // ... ваш код
+
+    return Promise.resolve(data)
+};
+
+// Вызов вашей функции, должен вызвать resultFn в итоге
+mainFn({
+    id: 78,
+    title: 'Some title',
+    single: 12345,
+    single: 12345,
+    multiple: [56783, 46573, 13251]
+}).then((result) => {
+    console.log(result);
+    let obj = result.single
+
+    /**
+     {
+     id: 78,    
+    title: 'Some title',
+       single: { id: 12345, data: { utime: ... }},
+       multiple: [{ id: 56783, data: { utime: ...  }}, { id: 46573, data: { utime: ...  }}, { id: 13251, data: { utime: ... }}]
+   }
+  */
+});
