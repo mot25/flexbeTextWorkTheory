@@ -74,9 +74,20 @@ const funcStr = (str) => {
     return answer
 };
 
-console.log(funcStr(str)); // 9
+// console.log(funcStr(str)); // 9
 
 
 /*
-
+4. Что можно улучшить? **Максимально** упростите код (сократите или удалите ненужные операции), сохранив его логику. **Важна логика, а не визуальное отображение звезд**.
 */
+
+function drawRating(vote) {
+    let arr = []
+    for (let i = 0; i < Math.ceil(vote / 20); i++) {
+        arr.push('★')
+    }
+    arr.push('☆☆☆☆☆')
+    return arr.join('').substring(0, 5)
+}
+
+console.log(drawRating(39));
