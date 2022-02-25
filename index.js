@@ -36,23 +36,15 @@ const input = [-2, 2, 4, 6, 8, 10, 3, 5, 7, 9, -1, -11];
 
 const func = (arr) => {
     let arr1 = []
-    let arr2 = []
-    let arr3 = []
-    for (const iter in arr) {
-        if (arr[iter] % 2 === 0) {
-            
-            arr1.push(arr[iter])
-            
+    for (const iter of arr) {
+        if (iter % 2 === 0) {
+            arr1.push(iter)
         }
     }
-    arr1.sort((a, b) => a - b).reverse()
-
-    let a = [-2, 2, 4, 6, 8, 10];
-    let sl = a.slice(0, 1)
-    console.log(sl);
-    console.log('arr1', arr1)
-    console.log('arr1sort', arr1)
-
+    arr1.sort((a, b) => b - a)
+    const s = new Set(arr1);
+    const abc = arr.filter(e => !s.has(e)).sort((a, b) => a - b)
+    return arr1.concat(abc)
 }
 
 console.log(func(input)); // [10, 8, 6, 4, 2, -2, -11, -1, 3, 5, 7, 9]
