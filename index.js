@@ -47,4 +47,36 @@ const func = (arr) => {
     return arr1.concat(abc)
 }
 
-console.log(func(input)); // [10, 8, 6, 4, 2, -2, -11, -1, 3, 5, 7, 9]
+// console.log(func(input)); // [10, 8, 6, 4, 2, -2, -11, -1, 3, 5, 7, 9]
+
+
+/*
+3. Имеется строка str с произвольным текстом. Необходимо без использования циклов (for, while, do) и объявления дополнительных переменных, посчитать количество символов в строке, у которых ASCII код кратный 3.
+
+Напишите по возможности наиболее компактный код.
+*/
+
+const str = 'Flexbe. Frontend. Test. 1234567890.';
+
+const funcStr = (str) => {
+    const arr = str.split(' ')
+    let i = 0
+    let answer = ''
+    function ansawerFun(arr) {
+        if (arr[i].length % 3 === 0) {
+            answer = `Word - ${arr[i]} and ansawer => ${arr[i].length}`
+        } else {
+            i++
+            ansawerFun(arr)
+        }
+    }
+    ansawerFun(arr)
+    return answer
+};
+
+console.log(funcStr(str)); // 9
+
+
+/*
+
+*/
