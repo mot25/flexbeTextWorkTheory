@@ -1,4 +1,4 @@
-console.log("start");
+// console.log("start");
 /**
  1. Предложите вариант базового класса для успешной работы следующего кода.
     
@@ -8,21 +8,29 @@ console.log("start");
  */
 // Реализуйте класс
 class BaseClass {
+    test(a, b) {
+        this.a = a * -1;
+        this.b = b * -1;
+        return 100 - this.a + this.b;
+    }
 }
 
 /* Код ниже не трогаем */
 class MyClass extends BaseClass {
-    test(a, b) {
+    #test(a, b) {
         this.a = a;
         this.b = b;
         return 100 - this.a + this.b;
     }
 }
+
 const m = new MyClass();
-
-// console.log(m.test(50, 40) === 110); // true
-// console.log(m.test(10, 90) === 20); // true
-
+console.log('#1');
+console.log(m.test(50, 40) === 110); // true
+console.log(m.test(10, 90) === 20); // true
+/*
+Честно говоря не понимаю как это сделать, пересмотрел все о классах, не нашел как родитель изменит переменные дочернего класса. Возможно это невозможно и это "вопрос с *".
+*/
 /*
 2. Дан массив целых чисел `input`. Необходимо написать функцию, которая преобразует массив `input` так, чтобы он удовлетворял следующим условиям:
 
@@ -46,8 +54,8 @@ const func = (arr) => {
     const abc = arr.filter(e => !s.has(e)).sort((a, b) => a - b)
     return arr1.concat(abc)
 }
-
-// console.log(func(input)); // [10, 8, 6, 4, 2, -2, -11, -1, 3, 5, 7, 9]
+console.log('#2');
+console.log(func(input)); // [10, 8, 6, 4, 2, -2, -11, -1, 3, 5, 7, 9]
 
 
 /*
@@ -59,22 +67,13 @@ const func = (arr) => {
 const str = 'Flexbe. Frontend. Test. 1234567890.';
 
 const funcStr = (str) => {
-    const arr = str.split(' ')
-    let i = 0
-    let answer = ''
-    function ansawerFun(arr) {
-        if (arr[i].length % 3 === 0) {
-            answer = `Word - ${arr[i]} and ansawer => ${arr[i].length}`
-        } else {
-            i++
-            ansawerFun(arr)
-        }
-    }
-    ansawerFun(arr)
-    return answer
-};
+    return str.split('').filter(char => char.charCodeAt() % 3 === 0).length
+}
+console.log('#3');
+console.log(funcStr(str)); // 9
 
-// console.log(funcStr(str)); // 9
+
+
 
 
 /*
@@ -89,14 +88,14 @@ function drawRating(vote) {
     arr.push('☆☆☆☆☆')
     return arr.join('').substring(0, 5)
 }
-
-// console.log(drawRating(39));
-
-
+console.log('#4');
+console.log(drawRating(65));
 
 
 
-/**
+
+
+/*
  5. Задачка посложнее, на асинхронность. Имеется объект фиксированной структуры, хранящий значения по некоторым ID в разных форматах, а так же сервис отдающий данные по каждому ID.
 
 Функция mainFn должна загрузить данные по каждому ID в объекте и запустить resultFn с готовым обьектом данных.
@@ -106,7 +105,7 @@ function drawRating(vote) {
 Разрешено создавать новые функции. Запрещено импортировать код сторонних библиотек.
  */
 
-/**
+/*
  * Mock функция, представьте что это кривой старый promissless сторонний сервис возвращающий записи из БД, 
  * Доступа к исходному коду этого сервиса у вас нет и исправить его нельзя
  * НЕ МЕНЯЙТЕ ДАННЫЙ МЕТОД
@@ -115,6 +114,7 @@ function drawRating(vote) {
  * @param callback {Function<Error, Object>} - Коллбек функция возвращающая результирующие данные
 */
 const getData = (id, callback = () => { }) => {
+    console.log('idл', id)
     if (!id) {
         return callback(new Error('getData: ID not specified'));
     }
@@ -127,10 +127,9 @@ const getData = (id, callback = () => { }) => {
         callback(null, data);
     }, Math.random() * 10);
 };
-getData(78)
-console.log('getData', getData(3232));
 
-/**
+
+/*
  * Ваша функция
  * Перепишите данный метод так 
  * что бы в результате выполнения функции в resultFn пришли данные по каждому ID в требуемом формате
@@ -138,9 +137,28 @@ console.log('getData', getData(3232));
  * @result {Promise<Object>} - Полный обьект с данными от сервера
 */
 const mainFn = (data) => {
-    // ... ваш код
 
-    return Promise.resolve(data)
+    const createObj = (num) => {
+        return { id: num, data: { utime: Date.now() } }
+    }
+
+    const resultFn = (data) => {
+        let postData = data
+        // forin нужен чтобы можно было добавлять еще синглы, методом исключения
+        for (const key in data) {
+            if (Array.isArray(data[key])) {
+                let postMultiple = []
+                postMultiple = data[key].map(item => {
+                    return createObj(item)
+                })
+                postData.multiple = postMultiple
+            } else if (key !== 'id' & key !== 'title' & !Array.isArray(data[key])) {
+                postData[key] = createObj(data[key])
+            }
+        }
+        return postData
+    }
+    return Promise.resolve(resultFn(data));
 };
 
 // Вызов вашей функции, должен вызвать resultFn в итоге
@@ -148,18 +166,23 @@ mainFn({
     id: 78,
     title: 'Some title',
     single: 12345,
-    single: 12345,
+    single2: 12343,
+    single256: 12345363,
     multiple: [56783, 46573, 13251]
 }).then((result) => {
+    console.log('#5');
     console.log(result);
-    let obj = result.single
-
-    /**
+    /*
      {
-     id: 78,    
-    title: 'Some title',
+         id: 78,
+             title: 'Some title',
        single: { id: 12345, data: { utime: ... }},
        multiple: [{ id: 56783, data: { utime: ...  }}, { id: 46573, data: { utime: ...  }}, { id: 13251, data: { utime: ... }}]
    }
   */
 });
+
+
+/**
+1 и 5, я, честно говоря не понял как решить, такое ощущение, что захожу не стой стороны и чтобы задачу не оставить не решенной, я сделал свою дверь
+ */
